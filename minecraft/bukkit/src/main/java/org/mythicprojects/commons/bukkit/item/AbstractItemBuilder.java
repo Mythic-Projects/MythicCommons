@@ -1,4 +1,4 @@
-package org.mythicprojects.commons.bukkit.util.item;
+package org.mythicprojects.commons.bukkit.item;
 
 import java.util.ArrayList;
 import java.util.Arrays;

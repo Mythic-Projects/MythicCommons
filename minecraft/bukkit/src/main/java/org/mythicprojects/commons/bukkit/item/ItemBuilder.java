@@ -1,4 +1,4 @@
-package org.mythicprojects.commons.bukkit.util.item;
+package org.mythicprojects.commons.bukkit.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

@@ -1,4 +1,4 @@
-package org.mythicprojects.commons.bukkit.util.item;
+package org.mythicprojects.commons.bukkit.item;
 
 import com.destroystokyo.paper.MaterialSetTag;
 import com.destroystokyo.paper.MaterialTags;
@@ -33,9 +33,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ItemUtil {
+public final class ItemHelper {
 
-    private ItemUtil() {
+    private ItemHelper() {
     }
 
     public static boolean isFunctionalBlock(@Nullable Block block) {

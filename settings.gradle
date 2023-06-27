@@ -11,7 +11,7 @@ def setupSubproject(String project, String name) {
 dependencyResolutionManagement {
     versionCatalogs {
         minecraft {
-            library("bukkit", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+            library("paper", "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
         }
         general {
             library("jetbrains-annotations", "org.jetbrains:annotations:24.0.1")

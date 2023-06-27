@@ -1,0 +1,58 @@
+plugins {
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    group = 'org.mythicprojects.commons'
+    version = '0.0.1-SNAPSHOT'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    compileJava.options.encoding = 'UTF-8'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+
+        // Mythic Projects
+        maven { url "https://repo.mythicprojects.org/releases" }
+        maven { url "https://repo.mythicprojects.org/snapshots" }
+
+        // Spigot
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
+
+    dependencies {
+
+    }
+
+    shadowJar {
+        dependsOn(jar)
+        archiveClassifier = ''
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    javadoc {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addStringOption('charSet', 'UTF-8')
+    }
+}
+
+idea {
+    project {
+        jdkName = "17"
+    }
+}

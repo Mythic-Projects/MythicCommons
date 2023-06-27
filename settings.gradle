@@ -1,0 +1,21 @@
+rootProject.name = 'MythicCommons'
+
+setupSubproject("general", "general")
+setupSubproject("minecraft:bukkit", "minecraft-bukkit")
+
+def setupSubproject(String project, String name) {
+    include "$project"
+    findProject(":$project")?.name = name
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        minecraft {
+            library("bukkit", "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+        }
+        general {
+            library("jetbrains-annotations", "org.jetbrains:annotations:24.0.1")
+        }
+    }
+}
+

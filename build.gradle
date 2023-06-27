@@ -48,6 +48,71 @@ subprojects {
         options.addStringOption('encoding', 'UTF-8')
         options.addStringOption('charSet', 'UTF-8')
     }
+
+    publishing {
+        publications {
+            libraries(MavenPublication) {
+                artifactId = project.name.toLowerCase()
+
+                from components.java
+
+                pom {
+                    url = "https://github.com/Mythic-Projects/MythicCommons"
+                    name = project.name
+                    description = "MythicCommons is general purpose library for Java and Minecraft projects."
+
+                    developers {
+                        developer {
+                            id = "peridot"
+                            name = "Peridot"
+                            email = "peridot491@pm.me"
+                        }
+                    }
+
+                    scm {
+                        url = "https://github.com/Mythic-Projects/MythicCommons.git"
+                        connection = "git@github.com:Mythic-Projects/MythicCommons.git"
+                        developerConnection = "git@github.com:Mythic-Projects/MythicCommons.git"
+                    }
+
+                    licenses {
+                        license {
+                            name = "The MIT License"
+                            url = "http://www.opensource.org/licenses/MIT"
+                            distribution = 'repo'
+                        }
+                    }
+                }
+
+                // Add external repositories to published artifacts
+                // ~ btw: pls don't touch this
+                // Original code: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/build.gradle
+                pom.withXml {
+                    def repositories = asNode().appendNode('repositories')
+
+                    project.getRepositories().findAll { repo ->
+                        if (repo.getUrl().toString().startsWith('http')) {
+                            def repository = repositories.appendNode('repository')
+                            repository.appendNode('id', repo.getUrl().toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                            repository.appendNode('url', repo.getUrl().toString())
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name "titanvale-repo"
+                url "https://repo.titanvale.net/${version.toString().endsWith('SNAPSHOT') ? 'snapshots' : 'releases'}"
+
+                credentials {
+                    username = System.getenv("MAVEN_NAME")
+                    password = System.getenv("MAVEN_TOKEN")
+                }
+            }
+        }
+    }
 }
 
 idea {

@@ -2,3 +2,7 @@ dependencies {
     implementation project(":general")
     compileOnly minecraft.bukkit
 }
+
+shadowJar {
+    dependsOn(project(":general").shadowJar)
+}

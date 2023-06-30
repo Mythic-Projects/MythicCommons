@@ -12,7 +12,7 @@ public interface ThrowingSupplier<T, E extends Throwable> {
         return () -> null;
     }
 
-    static <T, E extends Throwable> ThrowingSupplier<T, E> fail(@NotNull Supplier<E> exceptionSupplier) {
+    static <T, E extends Throwable> ThrowingSupplier<T, E> fail(@NotNull Supplier<? extends E> exceptionSupplier) {
         return () -> {
             throw exceptionSupplier.get();
         };

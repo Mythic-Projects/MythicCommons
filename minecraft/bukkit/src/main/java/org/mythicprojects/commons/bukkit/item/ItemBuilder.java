@@ -16,7 +16,7 @@ public class ItemBuilder extends AbstractItemBuilder<ItemBuilder> {
 
     @Override
     public @NotNull ItemBuilder copy() {
-        return new ItemBuilder(this.itemStack);
+        return ofCopy(this.itemStack);
     }
 
     public static @NotNull ItemBuilder of(@NotNull Material material, int amount) {

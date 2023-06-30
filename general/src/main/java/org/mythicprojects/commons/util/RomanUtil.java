@@ -1,4 +1,4 @@
-package org.mythicprojects.commons.bukkit.util;
+package org.mythicprojects.commons.util;
 
 import java.util.TreeMap;
 import org.jetbrains.annotations.NotNull;

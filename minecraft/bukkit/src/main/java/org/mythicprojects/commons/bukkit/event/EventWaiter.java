@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mythicprojects.commons.util.Pair;
+import org.mythicprojects.commons.wrapper.Pair;
 import org.mythicprojects.commons.util.Validate;
 
 public class EventWaiter {

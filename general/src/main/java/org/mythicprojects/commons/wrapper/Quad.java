@@ -7,7 +7,7 @@ public class Quad<A, B, C, D> {
     private final C third;
     private final D fourth;
 
-    Quad(A first, B second, C third, D fourth) {
+    protected Quad(A first, B second, C third, D fourth) {
         this.first = first;
         this.second = second;
         this.third = third;

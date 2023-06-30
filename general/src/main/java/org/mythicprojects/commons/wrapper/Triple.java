@@ -8,7 +8,7 @@ public class Triple<A, B, C> {
     private final B second;
     private final C third;
 
-    Triple(A first, B second, C third) {
+    protected Triple(A first, B second, C third) {
         this.first = first;
         this.second = second;
         this.third = third;

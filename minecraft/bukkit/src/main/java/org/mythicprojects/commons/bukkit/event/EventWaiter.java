@@ -14,8 +14,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mythicprojects.commons.wrapper.Pair;
+import org.mythicprojects.commons.function.ThrowingConsumer;
 import org.mythicprojects.commons.util.Validate;
+import org.mythicprojects.commons.wrapper.Pair;
 
 public class EventWaiter {
 
@@ -23,10 +24,18 @@ public class EventWaiter {
     };
 
     private final Plugin plugin;
+    private final Consumer<Throwable> exceptionHandler;
     private final Map<EventIdentifier<?>, Set<WaitingEvent>> waitingEvents = new ConcurrentHashMap<>();
 
-    public EventWaiter(@NotNull Plugin plugin) {
+    public EventWaiter(@NotNull Plugin plugin, @NotNull Consumer<Throwable> exceptionHandler) {
         this.plugin = plugin;
+        this.exceptionHandler = exceptionHandler;
+    }
+
+    public EventWaiter(@NotNull Plugin plugin) {
+        this(plugin, throwable -> {
+            throw new RuntimeException(throwable);
+        });
     }
 
     /**
@@ -70,7 +79,7 @@ public class EventWaiter {
             @NotNull Class<T> eventClass,
             @Nullable EventPriority priority,
             @NotNull Predicate<T> condition,
-            @NotNull Consumer<T> action,
+            @NotNull ThrowingConsumer<T, Throwable> action,
             long timeout,
             @Nullable Runnable timeoutAction
     ) {
@@ -112,7 +121,7 @@ public class EventWaiter {
     public <T extends Event> void waitForEvent(
             @NotNull Class<T> eventClass,
             @NotNull Predicate<T> condition,
-            @NotNull Consumer<T> action,
+            @NotNull ThrowingConsumer<T, Throwable> action,
             long timeout,
             @Nullable Runnable timeoutAction
     ) {
@@ -122,7 +131,7 @@ public class EventWaiter {
     public <T extends Event> void waitForEvent(
             @NotNull Class<T> eventClass,
             @NotNull Predicate<T> condition,
-            @NotNull Consumer<T> action,
+            @NotNull ThrowingConsumer<T, Throwable> action,
             long timeout
     ) {
         this.waitForEvent(eventClass, null, condition, action, timeout, null);
@@ -139,7 +148,7 @@ public class EventWaiter {
     public <T extends Event> void waitForEvent(
             @NotNull Class<T> eventClass,
             @NotNull Predicate<T> condition,
-            @NotNull Consumer<T> action
+            @NotNull ThrowingConsumer<T, Throwable> action
     ) {
         this.waitForEvent(eventClass, null, condition, action, -1, null);
     }
@@ -151,26 +160,35 @@ public class EventWaiter {
      * @param priority The event priority
      * @param <T>      The event type
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private <T extends Event> void handleEvent(@NotNull T event, @NotNull EventPriority priority) {
         EventIdentifier<?> key = new EventIdentifier<>(event.getClass(), priority);
         Set<WaitingEvent> waitingEvents = this.waitingEvents.get(key);
         if (waitingEvents == null) {
             return;
         }
-        waitingEvents.removeIf(waitingEvent -> waitingEvent.handle(event));
+
+        waitingEvents.removeIf(waitingEvent -> {
+            try {
+                return waitingEvent.handle(event);
+            } catch (Throwable throwable) {
+                this.exceptionHandler.accept(throwable);
+                return true;
+            }
+        });
     }
 
     private static class WaitingEvent<T extends Event> {
 
         private final Predicate<T> condition;
-        private final Consumer<T> action;
+        private final ThrowingConsumer<T, Throwable> action;
 
-        private WaitingEvent(@NotNull Predicate<T> condition, @NotNull Consumer<T> action) {
+        private WaitingEvent(@NotNull Predicate<T> condition, @NotNull ThrowingConsumer<T, Throwable> action) {
             this.condition = condition;
             this.action = action;
         }
 
-        public boolean handle(@NotNull T event) {
+        public boolean handle(@NotNull T event) throws Throwable {
             if (!this.condition.test(event)) {
                 return false;
             }

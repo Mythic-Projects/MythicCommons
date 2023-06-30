@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -24,16 +24,16 @@ public class EventWaiter {
     };
 
     private final Plugin plugin;
-    private final Consumer<Throwable> exceptionHandler;
+    private final BiConsumer<Event, Throwable> exceptionHandler;
     private final Map<EventIdentifier<?>, Set<WaitingEvent>> waitingEvents = new ConcurrentHashMap<>();
 
-    public EventWaiter(@NotNull Plugin plugin, @NotNull Consumer<Throwable> exceptionHandler) {
+    public EventWaiter(@NotNull Plugin plugin, @NotNull BiConsumer<Event, Throwable> exceptionHandler) {
         this.plugin = plugin;
         this.exceptionHandler = exceptionHandler;
     }
 
     public EventWaiter(@NotNull Plugin plugin) {
-        this(plugin, throwable -> {
+        this(plugin, (event, throwable) -> {
             throw new RuntimeException(throwable);
         });
     }
@@ -172,7 +172,7 @@ public class EventWaiter {
             try {
                 return waitingEvent.handle(event);
             } catch (Throwable throwable) {
-                this.exceptionHandler.accept(throwable);
+                this.exceptionHandler.accept(event, throwable);
                 return true;
             }
         });

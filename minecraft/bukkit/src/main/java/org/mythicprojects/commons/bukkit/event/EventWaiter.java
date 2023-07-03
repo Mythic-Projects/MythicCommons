@@ -100,7 +100,7 @@ public class EventWaiter {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
             if (!waitingEvents.remove(waitingEvent)) {
                 return;
             }

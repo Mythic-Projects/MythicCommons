@@ -2,6 +2,7 @@ package org.mythicprojects.commons.bukkit.world;
 
 import java.util.Arrays;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class Point {
@@ -32,6 +33,18 @@ public class Point {
         return Math.pow(this.x - other.x, 2.0D) + Math.pow(this.y - other.y, 2.0D) + Math.pow(this.z - other.z, 2.0D);
     }
 
+    public static @NotNull Point of(double x, double y, double z) {
+        return new Point(x, y, z);
+    }
+
+    public static @NotNull Point of(@NotNull Vector vector) {
+        return new Point(
+                vector.getX(),
+                vector.getY(),
+                vector.getZ()
+        );
+    }
+
     public static @NotNull Point of(@NotNull org.bukkit.util.Vector bukkitVector) {
         return new Point(
                 bukkitVector.getX(),
@@ -45,6 +58,14 @@ public class Point {
                 location.getX(),
                 location.getY(),
                 location.getZ()
+        );
+    }
+
+    public static @NotNull Point of(@NotNull Block block) {
+        return new Point(
+                block.getX(),
+                block.getY(),
+                block.getZ()
         );
     }
 

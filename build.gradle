@@ -9,7 +9,7 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     group = 'org.mythicprojects.commons'
-    version = '0.1.3-SNAPSHOT'
+    version = '0.1.4-SNAPSHOT'
 
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16

@@ -1,6 +1,12 @@
 rootProject.name = 'MythicCommons'
 
 setupSubproject("general", "general")
+
+setupSubproject("connection", "connection")
+setupSubproject("connection:common", "connection-common")
+setupSubproject("connection:sql", "connection-sql")
+setupSubproject("connection:redis", "connection-redis")
+
 setupSubproject("minecraft:bukkit", "minecraft-bukkit")
 
 def setupSubproject(String project, String name) {
@@ -10,11 +16,15 @@ def setupSubproject(String project, String name) {
 
 dependencyResolutionManagement {
     versionCatalogs {
-        minecraft {
-            library("paper", "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-        }
         general {
             library("jetbrains-annotations", "org.jetbrains:annotations:24.0.1")
+        }
+        connection {
+            library("sql-hikari", "com.zaxxer:HikariCP:4.0.3")
+            library("redis-lettuce", "io.lettuce:lettuce-core:6.2.5.RELEASE")
+        }
+        minecraft {
+            library("paper", "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
         }
     }
 }

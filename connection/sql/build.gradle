@@ -1,0 +1,9 @@
+dependencies {
+    api project(":connection:connection-common")
+
+    api connection.sql.hikari
+}
+
+shadowJar {
+    dependsOn(project(":connection:connection-common").shadowJar)
+}

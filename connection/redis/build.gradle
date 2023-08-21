@@ -1,0 +1,9 @@
+dependencies {
+    api project(":connection:connection-common")
+
+    api connection.redis.lettuce
+}
+
+shadowJar {
+    dependsOn(project(":connection:connection-common").shadowJar)
+}

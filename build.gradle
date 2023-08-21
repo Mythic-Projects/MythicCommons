@@ -29,10 +29,6 @@ subprojects {
         maven { url "https://repo.papermc.io/repository/maven-public" }
     }
 
-    dependencies {
-
-    }
-
     shadowJar {
         dependsOn(jar)
         archiveClassifier = ''

@@ -14,8 +14,4 @@ public interface SqlConfiguration {
 
     int getConnectionTimeout();
 
-    default @NotNull String getTablePrefix() {
-        return "";
-    }
-
 }

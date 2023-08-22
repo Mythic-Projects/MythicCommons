@@ -30,10 +30,6 @@ public class SqlDatabase implements Connection {
         this.runAsync = Validate.notNull(runAsync, "runAsync cannot be null");
     }
 
-    public @NotNull String prepareTableName(@NotNull String baseName) {
-        return this.configuration.getTablePrefix() + baseName;
-    }
-
     @Override
     public void open() {
         this.dataSource = new HikariDataSource();
@@ -94,21 +90,12 @@ public class SqlDatabase implements Connection {
         this.runAsync(() -> this.executeStatement(statementConsumer, query, tableName));
     }
 
-    public void executeStatementWithPreparedTable(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query, @NotNull String baseTableName) {
-        this.executeStatement(statementConsumer, query, this.prepareTableName(baseTableName));
-    }
-
-    public void executeStatementWithPreparedTableAsync(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query, @NotNull String baseTableName) {
-        this.runAsync(() -> this.executeStatementWithPreparedTable(statementConsumer, query, baseTableName));
-    }
-
-    public Optional<SqlTable> findTable(@NotNull String baseName) {
-        return Optional.ofNullable(this.tables.get(this.prepareTableName(baseName)));
+    public Optional<SqlTable> findTable(@NotNull String tableName) {
+        return Optional.ofNullable(this.tables.get(tableName));
     }
 
     @Blocking
-    public SqlTable createTable(@NotNull String baseName, @NotNull String createQuery) {
-        String tableName = this.prepareTableName(baseName);
+    public SqlTable createTable(@NotNull String tableName, @NotNull String createQuery) {
         if (this.tables.get(tableName) != null) {
             throw new IllegalStateException("Table " + tableName + " already exists");
         }
@@ -120,8 +107,8 @@ public class SqlDatabase implements Connection {
     }
 
     @Blocking
-    public SqlTable findOrCreateTable(@NotNull String baseName, @NotNull String createQuery) {
-        return this.findTable(baseName).orElseGet(() -> this.createTable(baseName, createQuery));
+    public SqlTable findOrCreateTable(@NotNull String tableName, @NotNull String createQuery) {
+        return this.findTable(tableName).orElseGet(() -> this.createTable(tableName, createQuery));
     }
 
     public void runAsync(@NotNull Runnable runnable) {

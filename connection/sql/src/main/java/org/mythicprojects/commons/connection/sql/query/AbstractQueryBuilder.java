@@ -9,29 +9,29 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.connection.sql.SqlExecutable;
 import org.mythicprojects.commons.util.Validate;
 
-public class QueryBuilder implements SqlExecutable {
+abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<?>> implements SqlExecutable {
 
     private final List<Query> queries = new ArrayList<>();
 
     @Contract("_ -> this")
-    public QueryBuilder addQuery(@NotNull Query query) {
+    public T addQuery(@NotNull Query query) {
         Validate.notNull(query, "Query cannot be null");
         this.queries.add(query);
-        return this;
+        return (T) this;
     }
 
     @Contract("_ -> this")
-    public QueryBuilder addQuery(@NotNull String query) {
+    public T addQuery(@NotNull String query) {
         return this.addQuery(new Query(query));
     }
 
     @Contract("_, _ -> this")
-    public QueryBuilder addQuery(@NotNull String query, @NotNull List<Object> parameters) {
+    public T addQuery(@NotNull String query, @NotNull List<Object> parameters) {
         return this.addQuery(new Query(query, parameters));
     }
 
     @Contract("_, _ -> this")
-    public QueryBuilder addQuery(@NotNull String query, @NotNull Object... parameters) {
+    public T addQuery(@NotNull String query, @NotNull Object... parameters) {
         return this.addQuery(new Query(query, parameters));
     }
 

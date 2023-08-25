@@ -10,11 +10,15 @@ public final class DatabaseHelper {
     private DatabaseHelper() {
     }
 
-    public static @NotNull String replaceTable(@NotNull String statement, @NotNull String tableName) {
-        while (statement.contains("{TABLE}")) {
-            statement = statement.replace("{TABLE}", tableName);
+    public static @NotNull String replaceTable(@NotNull String tablePlaceholder, @NotNull String statement, @NotNull String tableName) {
+        while (statement.contains(tablePlaceholder)) {
+            statement = statement.replace(tablePlaceholder, tableName);
         }
         return statement;
+    }
+
+    public static @NotNull String replaceTable(@NotNull String statement, @NotNull String tableName) {
+        return replaceTable("{TABLE}", statement, tableName);
     }
 
     public static void completeStatement(@NotNull PreparedStatement statement, @NotNull List<Object> params) throws SQLException {

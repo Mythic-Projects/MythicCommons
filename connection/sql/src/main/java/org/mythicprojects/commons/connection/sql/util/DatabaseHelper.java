@@ -23,4 +23,10 @@ public final class DatabaseHelper {
         }
     }
 
+    public static void completeStatement(@NotNull PreparedStatement statement, @NotNull Object... params) throws SQLException {
+        for (int i = 0; i < params.length; i++) {
+            statement.setObject(i + 1, params[i]);
+        }
+    }
+
 }

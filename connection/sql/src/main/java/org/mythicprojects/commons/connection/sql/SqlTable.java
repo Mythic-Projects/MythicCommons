@@ -25,4 +25,8 @@ public class SqlTable {
         executable.execute(this.database, this.name);
     }
 
+    public @NotNull String getName() {
+        return this.name;
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.mythicprojects.commons.function;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 public interface ThrowingFunction<T, R, E extends Throwable> {
 
     R apply(T t) throws E;
+
+    static <T, R, E extends Throwable> ThrowingFunction<T, R, E> of(@NotNull Function<T, R> function) {
+        return function::apply;
+    }
 
     static <T, E extends Throwable> ThrowingFunction<T, T, E> identity() {
         return t -> t;

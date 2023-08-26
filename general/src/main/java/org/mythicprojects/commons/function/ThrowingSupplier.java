@@ -8,6 +8,10 @@ public interface ThrowingSupplier<T, E extends Throwable> {
 
     T get() throws E;
 
+    static <T, E extends Throwable> ThrowingSupplier<T, E> of(@NotNull Supplier<T> supplier) {
+        return supplier::get;
+    }
+
     static <T, E extends Throwable> ThrowingSupplier<T, E> empty() {
         return () -> null;
     }

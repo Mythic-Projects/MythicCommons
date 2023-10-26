@@ -1,9 +1,13 @@
 package org.mythicprojects.commons.connection.sql.util;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class DatabaseHelper {
 
@@ -31,6 +35,41 @@ public final class DatabaseHelper {
         for (int i = 0; i < params.length; i++) {
             statement.setObject(i + 1, params[i]);
         }
+    }
+
+    public static @Nullable Long getLong(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        long value = resultSet.getLong(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Integer getInt(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        int value = resultSet.getInt(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Short getShort(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        short value = resultSet.getShort(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Byte getByte(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        byte value = resultSet.getByte(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Double getDouble(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        double value = resultSet.getDouble(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Float getFloat(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        float value = resultSet.getFloat(columnName);
+        return resultSet.wasNull() ? null : value;
+    }
+
+    public static @Nullable Instant getInstant(@NotNull ResultSet resultSet, @NotNull String columnName) throws SQLException {
+        Timestamp timestamp = resultSet.getTimestamp(columnName);
+        return timestamp == null ? null : timestamp.toInstant();
     }
 
 }

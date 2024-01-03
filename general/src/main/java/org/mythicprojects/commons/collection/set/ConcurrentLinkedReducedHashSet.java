@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Based on <a href="https://www.javaspecialists.eu/archive/Issue296-Concurrent-LinkedHashSet.html">this article</a>
  */
+@ApiStatus.Experimental
 public class ConcurrentLinkedReducedHashSet<E> extends AbstractSet<E> implements Iterable<E> {
 
     /**

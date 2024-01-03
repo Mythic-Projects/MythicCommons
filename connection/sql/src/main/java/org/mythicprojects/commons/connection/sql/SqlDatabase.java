@@ -36,12 +36,12 @@ public class SqlDatabase implements Connection {
             @NotNull SqlConfiguration configuration,
             @NotNull Consumer<HikariDataSource> dataSourceConsumer,
             @NotNull Consumer<Throwable> exceptionHandler,
-            @NotNull Executor execute
+            @NotNull Executor executor
     ) {
         this.configuration = Validate.notNull(configuration, "configuration cannot be null");
         this.dataSourceConsumer = Validate.notNull(dataSourceConsumer, "dataSourceConsumer cannot be null");
         this.exceptionHandler = Validate.notNull(exceptionHandler, "exceptionHandler cannot be null");
-        this.executor = Validate.notNull(execute, "executor cannot be null");
+        this.executor = Validate.notNull(executor, "executor cannot be null");
     }
 
     @Override
@@ -163,7 +163,7 @@ public class SqlDatabase implements Connection {
         private Consumer<HikariDataSource> dataSourceConsumer = dataSource -> {
         };
         private Consumer<Throwable> exceptionHandler = Throwable::printStackTrace;
-        private Executor asyncExecutor = ForkJoinPool.commonPool();
+        private Executor executor = ForkJoinPool.commonPool();
 
         private Builder(@NotNull SqlConfiguration configuration) {
             this.configuration = Validate.notNull(configuration, "configuration cannot be null");
@@ -182,14 +182,14 @@ public class SqlDatabase implements Connection {
         }
 
         @Contract("_ -> this")
-        public Builder asyncExecutor(@NotNull Executor asyncExecutor) {
-            this.asyncExecutor = Validate.notNull(asyncExecutor, "asyncExecutor cannot be null");
+        public Builder executor(@NotNull Executor executor) {
+            this.executor = Validate.notNull(executor, "executor cannot be null");
             return this;
         }
 
         @Contract(" -> new")
         public SqlDatabase build() {
-            return new SqlDatabase(this.configuration, this.dataSourceConsumer, this.exceptionHandler, this.asyncExecutor);
+            return new SqlDatabase(this.configuration, this.dataSourceConsumer, this.exceptionHandler, this.executor);
         }
 
     }

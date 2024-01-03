@@ -52,6 +52,7 @@ public class SqlDatabase implements Connection {
 
         this.dataSource = new HikariDataSource();
 
+        this.dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.dataSource.setJdbcUrl(this.configuration.getUri());
         this.dataSource.setUsername(this.configuration.getUsername());
         this.dataSource.setPassword(this.configuration.getPassword());

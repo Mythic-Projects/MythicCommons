@@ -16,9 +16,10 @@ import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 import org.mythicprojects.commons.connection.Connection;
 import org.mythicprojects.commons.connection.sql.util.DatabaseHelper;
-import org.mythicprojects.commons.connection.sql.util.SqlConsumer;
+import org.mythicprojects.commons.connection.sql.util.SqlFunction;
 import org.mythicprojects.commons.util.Validate;
 
 public class SqlDatabase implements Connection {
@@ -83,43 +84,45 @@ public class SqlDatabase implements Connection {
     }
 
     @Blocking
-    public void connect(@NotNull SqlConsumer<java.sql.Connection> connectionConsumer) {
+    public <T> @UnknownNullability T connect(@NotNull SqlFunction<java.sql.Connection, T> function) {
         try (java.sql.Connection connection = this.dataSource.getConnection()) {
-            connectionConsumer.accept(connection);
+            return function.apply(connection);
         } catch (SQLException ex) {
             this.exceptionHandler.accept(ex);
+            return null;
         }
     }
 
     @NonBlocking
-    public CompletableFuture<Void> connectAsync(@NotNull SqlConsumer<java.sql.Connection> connectionConsumer) {
-        return this.runAsync(() -> this.connect(connectionConsumer));
+    public <T> CompletableFuture<@UnknownNullability T> connectAsync(@NotNull SqlFunction<java.sql.Connection, T> function) {
+        return this.runAsync(() -> this.connect(function));
     }
 
     @Blocking
-    public void executeStatement(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query) {
-        this.connect(connection -> {
+    public <T> @UnknownNullability T executeStatement(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query) {
+        return this.connect(connection -> {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statementConsumer.accept(statement);
+                return function.apply(statement);
             } catch (SQLException ex) {
                 this.exceptionHandler.accept(ex);
+                return null;
             }
         });
     }
 
     @NonBlocking
-    public CompletableFuture<Void> executeStatementAsync(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query) {
-        return this.runAsync(() -> this.executeStatement(statementConsumer, query));
+    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query) {
+        return this.runAsync(() -> this.executeStatement(function, query));
     }
 
     @Blocking
-    public void executeStatement(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query, @NotNull String tableName) {
-        this.executeStatement(statementConsumer, DatabaseHelper.replaceTable(query, tableName));
+    public <T> @UnknownNullability T executeStatement(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName) {
+        return this.executeStatement(function, DatabaseHelper.replaceTable(query, tableName));
     }
 
     @NonBlocking
-    public CompletableFuture<Void>  executeStatementAsync(@NotNull SqlConsumer<PreparedStatement> statementConsumer, @NotNull String query, @NotNull String tableName) {
-        return this.runAsync(() -> this.executeStatement(statementConsumer, query, tableName));
+    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName) {
+        return this.executeStatementAsync(function, DatabaseHelper.replaceTable(query, tableName));
     }
 
     public Optional<SqlTable> findTable(@NotNull String tableName) {
@@ -144,13 +147,8 @@ public class SqlDatabase implements Connection {
     }
 
     @ApiStatus.Internal
-    public <T> CompletableFuture<T> runAsync(@NotNull Supplier<T> consumer) {
+    public final <T> CompletableFuture<T> runAsync(@NotNull Supplier<T> consumer) {
         return CompletableFuture.supplyAsync(consumer, this.executor);
-    }
-
-    @ApiStatus.Internal
-    public CompletableFuture<Void> runAsync(@NotNull Runnable consumer) {
-        return CompletableFuture.runAsync(consumer, this.executor);
     }
 
     public static Builder builder(@NotNull SqlConfiguration configuration) {

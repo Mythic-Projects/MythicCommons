@@ -6,28 +6,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 import org.mythicprojects.commons.connection.sql.SqlExecutable;
 import org.mythicprojects.commons.connection.sql.util.DatabaseHelper;
-import org.mythicprojects.commons.connection.sql.util.SqlConsumer;
+import org.mythicprojects.commons.connection.sql.util.SqlFunction;
 import org.mythicprojects.commons.util.Validate;
 
-public class Query implements SqlExecutable {
+public class Query<T> implements SqlExecutable<T> {
 
     private final String query;
     private final List<Object> parameters;
 
-    private final Set<SqlConsumer<ResultSet>> resultConsumers = new LinkedHashSet<>();
+    private SqlFunction<ResultSet, T> resultProcessor;
 
     public Query(@NotNull String query, @NotNull List<Object> parameters) {
         Validate.notEmpty(query, "query cannot be null or empty");
         Validate.notNull(parameters, "parameters cannot be null");
         this.query = query;
-        this.parameters = parameters;
+        this.parameters = List.copyOf(parameters);
     }
 
     public Query(@NotNull String query, @NotNull Object... parameters) {
@@ -42,30 +42,27 @@ public class Query implements SqlExecutable {
         return this.query;
     }
 
-    public @NotNull List<Object> getParameters() {
+    public @NotNull @Unmodifiable List<Object> getParameters() {
         return this.parameters;
     }
 
     @Contract("_ -> this")
-    public Query resultConsumer(@NotNull SqlConsumer<ResultSet> resultSetConsumer) {
-        Validate.notNull(resultSetConsumer, "resultSetConsumer cannot be null");
-        this.resultConsumers.add(resultSetConsumer);
+    public Query<T> resultProcessor(@NotNull SqlFunction<ResultSet, T> resultProcessor) {
+        Validate.notNull(resultProcessor, "resultProcessor cannot be null");
+        this.resultProcessor = resultProcessor;
         return this;
     }
 
     @Override
-    public void execute(@NotNull Connection connection, @NotNull String tableName) throws SQLException {
+    public @UnknownNullability T execute(@NotNull Connection connection, @NotNull String tableName) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(DatabaseHelper.replaceTable(this.getQuery(), tableName))) {
             DatabaseHelper.completeStatement(statement, this.getParameters());
-            if (this.resultConsumers.isEmpty()) {
+            if (this.resultProcessor == null) {
                 statement.executeUpdate();
-                return;
+                return null;
             }
-
             ResultSet result = statement.executeQuery();
-            for (SqlConsumer<ResultSet> resultConsumer : this.resultConsumers) {
-                resultConsumer.accept(result);
-            }
+            return this.resultProcessor.apply(result);
         }
     }
 

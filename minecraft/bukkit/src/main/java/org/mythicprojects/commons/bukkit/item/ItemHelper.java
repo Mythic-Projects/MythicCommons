@@ -30,9 +30,11 @@ import org.bukkit.block.data.type.EndPortalFrame;
 import org.bukkit.block.data.type.Grindstone;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@ApiStatus.Experimental
 public final class ItemHelper {
 
     private ItemHelper() {

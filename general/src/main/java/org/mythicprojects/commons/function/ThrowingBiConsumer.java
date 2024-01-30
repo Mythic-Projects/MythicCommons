@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface ThrowingBiConsumer <T, U, E extends Throwable> {
+public interface ThrowingBiConsumer<T, U, E extends Throwable> {
 
     void accept(T t, U u) throws E;
 

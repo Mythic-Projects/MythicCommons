@@ -4,7 +4,8 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Quad;
 
-public interface QuadSupplier <T, U, V, W> {
+@FunctionalInterface
+public interface QuadSupplier<T, U, V, W> {
 
     Quad<T, U, V, W> get();
 

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Pair;
 
 @FunctionalInterface
-public interface ThrowingBiSupplier <T, U, E extends Exception> {
+public interface ThrowingBiSupplier<T, U, E extends Exception> {
 
     Pair<T, U> get() throws E;
 

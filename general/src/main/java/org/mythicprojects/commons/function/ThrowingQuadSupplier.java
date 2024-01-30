@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Quad;
 
 @FunctionalInterface
-public interface ThrowingQuadSupplier <T, U, V, W, E extends Exception> {
+public interface ThrowingQuadSupplier<T, U, V, W, E extends Exception> {
 
     Quad<T, U, V, W> get() throws E;
 

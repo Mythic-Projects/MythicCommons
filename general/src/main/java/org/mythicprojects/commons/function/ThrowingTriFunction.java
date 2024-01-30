@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface ThrowingTriFunction <T, U, V, R, E extends Throwable>{
+public interface ThrowingTriFunction<T, U, V, R, E extends Throwable>{
 
     R apply(T t, U u, V v) throws E;
 

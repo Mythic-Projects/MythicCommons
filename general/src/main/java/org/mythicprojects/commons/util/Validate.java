@@ -47,27 +47,29 @@ public final class Validate {
         isFalse(condition, "Condition is not false", args);
     }
 
-    public static void notEmpty(@UnknownNullability String string, @NotNull String message, @NotNull Object... args) {
+    public static @NotNull String notEmpty(@UnknownNullability String string, @NotNull String message, @NotNull Object... args) {
         notNull(string, message, args);
         if (string.isEmpty()) {
             throw new IllegalArgumentException(String.format(message, args));
         }
+        return string;
     }
 
-    public static void notEmpty(@UnknownNullability String string, @NotNull Object... args) {
-        notEmpty(string, "String cannot be empty", args);
+    public static @NotNull String notEmpty(@UnknownNullability String string, @NotNull Object... args) {
+        return notEmpty(string, "String cannot be empty", args);
     }
 
-    public static void notBlank(@UnknownNullability String string, @NotNull String message, @NotNull Object... args) {
+    public static @NotNull String notBlank(@UnknownNullability String string, @NotNull String message, @NotNull Object... args) {
         notNull(string, message, args);
         notEmpty(string, message, args);
         if (string.trim().isEmpty()) {
             throw new IllegalArgumentException(String.format(message, args));
         }
+        return string;
     }
 
-    public static void notBlank(@UnknownNullability String string, @NotNull Object... args) {
-        notBlank(string, "String cannot be empty or blank", args);
+    public static @NotNull String notBlank(@UnknownNullability String string, @NotNull Object... args) {
+        return notBlank(string, "String cannot be empty or blank", args);
     }
 
 }

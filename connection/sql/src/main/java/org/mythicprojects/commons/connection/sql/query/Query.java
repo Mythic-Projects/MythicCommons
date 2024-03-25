@@ -24,10 +24,8 @@ public class Query<T> implements SqlExecutable<T> {
     private SqlFunction<ResultSet, T> resultProcessor;
 
     public Query(@NotNull String query, @NotNull List<Object> parameters) {
-        Validate.notEmpty(query, "query cannot be null or empty");
-        Validate.notNull(parameters, "parameters cannot be null");
-        this.query = query;
-        this.parameters = List.copyOf(parameters);
+        this.query = Validate.notEmpty(query, "query cannot be null or empty");
+        this.parameters = List.copyOf(Validate.notNull(parameters, "parameters cannot be null"));
     }
 
     public Query(@NotNull String query, @NotNull Object... parameters) {

@@ -59,8 +59,10 @@ subprojects {
     publishing {
         publications {
             libraries(MavenPublication) {
+                from project.shadow.component(it)
+                artifact sourcesJar
+                artifact javadocJar
                 artifactId = project.name.toLowerCase()
-                from components.java
 
                 pom {
                     url = "https://github.com/Mythic-Projects/MythicCommons"

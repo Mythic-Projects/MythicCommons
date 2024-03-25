@@ -45,11 +45,21 @@ subprojects {
         options.addStringOption('charSet', 'UTF-8')
     }
 
+    afterEvaluate {
+        def shadowJarTask = project.tasks.shadowJar
+        project.configurations
+                .collectMany { it.allDependencies }
+                .findAll { it instanceof ProjectDependency }
+                .unique()
+                .forEach {
+                    shadowJarTask.dependsOn(it.dependencyProject.tasks.shadowJar)
+                }
+    }
+
     publishing {
         publications {
             libraries(MavenPublication) {
                 artifactId = project.name.toLowerCase()
-
                 from components.java
 
                 pom {

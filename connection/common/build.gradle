@@ -1,7 +1,3 @@
 dependencies {
     api project(":general")
 }
-
-shadowJar {
-    dependsOn(project(":general").shadowJar)
-}

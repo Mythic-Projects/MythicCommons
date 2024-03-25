@@ -2,7 +2,3 @@ dependencies {
     implementation project(":general")
     compileOnly minecraft.paper
 }
-
-shadowJar {
-    dependsOn(project(":general").shadowJar)
-}

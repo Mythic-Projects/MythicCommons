@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -88,7 +89,7 @@ public class BatchQuery<T> implements SqlExecutable<T> {
         }
         Validate.isTrue(allParametersNotNull, "parameters cannot contain null elements");
         Validate.isTrue(allParametersSameSize, "parameters must have the same size");
-        return finalParametersList;
+        return Collections.unmodifiableList(finalParametersList);
     }
 
 }

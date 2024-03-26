@@ -10,7 +10,6 @@ import java.util.List;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
-import org.jetbrains.annotations.Unmodifiable;
 import org.mythicprojects.commons.connection.sql.SqlExecutable;
 import org.mythicprojects.commons.connection.sql.util.DatabaseHelper;
 import org.mythicprojects.commons.connection.sql.util.SqlFunction;
@@ -25,7 +24,7 @@ public class Query<T> implements SqlExecutable<T> {
 
     public Query(@NotNull String query, @NotNull List<Object> parameters) {
         this.query = Validate.notEmpty(query, "query cannot be null or empty");
-        this.parameters = List.copyOf(Validate.notNull(parameters, "parameters cannot be null"));
+        this.parameters = Validate.notNull(parameters, "parameters cannot be null");
     }
 
     public Query(@NotNull String query, @NotNull Object... parameters) {
@@ -34,14 +33,6 @@ public class Query<T> implements SqlExecutable<T> {
 
     public Query(@NotNull String query) {
         this(query, Collections.emptyList());
-    }
-
-    public @NotNull String getQuery() {
-        return this.query;
-    }
-
-    public @NotNull @Unmodifiable List<Object> getParameters() {
-        return this.parameters;
     }
 
     @Contract("_ -> this")
@@ -53,8 +44,8 @@ public class Query<T> implements SqlExecutable<T> {
 
     @Override
     public @UnknownNullability T execute(@NotNull Connection connection, @NotNull String tableName) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(DatabaseHelper.replaceTable(this.getQuery(), tableName))) {
-            DatabaseHelper.completeStatement(statement, this.getParameters());
+        try (PreparedStatement statement = connection.prepareStatement(DatabaseHelper.replaceTable(this.query, tableName))) {
+            DatabaseHelper.completeStatement(statement, this.parameters);
             if (this.resultProcessor == null) {
                 statement.executeUpdate();
                 return null;

@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Original code from https://stackoverflow.com/a/35846296
+ * Based on <a href="https://stackoverflow.com/a/35846296">this</a>.
  */
 public final class RandomComparator<T> implements Comparator<T> {
 

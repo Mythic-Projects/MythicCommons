@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A concurrent set that maintains insertion order.
  * <p>
- * Based on <a href="https://www.javaspecialists.eu/archive/Issue296-Concurrent-LinkedHashSet.html">this article</a>
+ * Based on <a href="https://www.javaspecialists.eu/archive/Issue296-Concurrent-LinkedHashSet.html">this article</a>.
  */
 @ApiStatus.Experimental
 public class ConcurrentLinkedReducedHashSet<E> extends AbstractSet<E> implements Iterable<E> {

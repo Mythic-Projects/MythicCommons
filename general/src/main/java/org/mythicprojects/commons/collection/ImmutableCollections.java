@@ -14,9 +14,12 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-public final class CollectionHelper {
+/**
+ * A utility class for easily modifying immutable collections by creating mutable copies of them and applying changes to them.
+ */
+public final class ImmutableCollections {
 
-    private CollectionHelper() {
+    private ImmutableCollections() {
     }
 
     public static <K, V> @Unmodifiable Map<K, V> modify(@NotNull Map<K, V> sourceMap, @NotNull Function<Map<K, V>, Map<K, V>> mutableMapFactory, @NotNull Consumer<Map<K, V>> consumer) {

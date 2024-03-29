@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +22,6 @@ public final class StringReplacer {
         for (Replacement replacement : replacements) {
             text = replacement.replace(text);
         }
-
         return text;
     }
 

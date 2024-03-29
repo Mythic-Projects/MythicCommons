@@ -47,6 +47,7 @@ public final class Cooldown<T> {
     }
 
     /**
+     * Puts the key on cooldown for the specified duration
      * @param key the key to put on cooldown
      * @param duration the duration of the cooldown
      */
@@ -55,6 +56,7 @@ public final class Cooldown<T> {
     }
 
     /**
+     * Puts the key on cooldown for the specified duration if it is not already on cooldown
      * @param key the key to put on cooldown
      * @param cooldown the cooldown
      * @return true if the key was on cooldown, false otherwise

@@ -70,4 +70,12 @@ public final class Cooldown<T> {
         return false;
     }
 
+    /**
+     * Removes the key from the cooldown map
+     * @param key the key to remove
+     */
+    public void removeFromCooldown(@NotNull T key) {
+        this.cooldowns.remove(key);
+    }
+
 }

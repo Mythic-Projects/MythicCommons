@@ -11,8 +11,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mythicprojects.commons.function.ThrowingFunction;
 
 public final class DatabaseHelper {
 
@@ -77,7 +79,10 @@ public final class DatabaseHelper {
         return timestamp == null ? null : timestamp.toInstant();
     }
 
-    public static <V> @NotNull List<V> processResultSetToList(@NotNull ResultSet resultSet, @NotNull SqlFunction<ResultSet, V> resultProcessor) throws SQLException {
+    public static <V> @NotNull List<V> processResultSetToList(
+            @NotNull ResultSet resultSet,
+            @NotNull SqlFunction<ResultSet, V> resultProcessor
+    ) throws SQLException {
         List<V> results = new ArrayList<>();
         while (resultSet.next()) {
             results.add(resultProcessor.apply(resultSet));
@@ -85,7 +90,18 @@ public final class DatabaseHelper {
         return results;
     }
 
-    public static <V> @NotNull Set<V> processResultSetToSet(@NotNull ResultSet resultSet, @NotNull SqlFunction<ResultSet, V> resultProcessor) throws SQLException {
+    @ApiStatus.Experimental
+    public static <V> @NotNull List<V> processResultSetToListThrowing(
+            @NotNull ResultSet resultSet,
+            @NotNull ThrowingFunction<ResultSet, V, ? extends Exception> resultProcessor
+    ) throws SQLException {
+        return processResultSetToList(resultSet, SqlFunction.throwing(resultProcessor));
+    }
+
+    public static <V> @NotNull Set<V> processResultSetToSet(
+            @NotNull ResultSet resultSet,
+            @NotNull SqlFunction<ResultSet, V> resultProcessor
+    ) throws SQLException {
         Set<V> results = new LinkedHashSet<>();
         while (resultSet.next()) {
             results.add(resultProcessor.apply(resultSet));
@@ -93,12 +109,33 @@ public final class DatabaseHelper {
         return results;
     }
 
-    public static <K, V> @NotNull Map<K, V> processResultSetToMap(@NotNull ResultSet resultSet, @NotNull SqlFunction<ResultSet, K> keyProcessor, @NotNull SqlFunction<ResultSet, V> valueProcessor) throws SQLException {
+    @ApiStatus.Experimental
+    public static <V> @NotNull Set<V> processResultSetToSetThrowing(
+            @NotNull ResultSet resultSet,
+            @NotNull ThrowingFunction<ResultSet, V, ? extends Exception> resultProcessor
+    ) throws SQLException {
+        return processResultSetToSet(resultSet, SqlFunction.throwing(resultProcessor));
+    }
+
+    public static <K, V> @NotNull Map<K, V> processResultSetToMap(
+            @NotNull ResultSet resultSet,
+            @NotNull SqlFunction<ResultSet, K> keyProcessor,
+            @NotNull SqlFunction<ResultSet, V> valueProcessor
+    ) throws SQLException {
         Map<K, V> results = new LinkedHashMap<>();
         while (resultSet.next()) {
             results.put(keyProcessor.apply(resultSet), valueProcessor.apply(resultSet));
         }
         return results;
+    }
+
+    @ApiStatus.Experimental
+    public static <K, V> @NotNull Map<K, V> processResultSetToMapThrowing(
+            @NotNull ResultSet resultSet,
+            @NotNull ThrowingFunction<ResultSet, K, ? extends Exception> keyProcessor,
+            @NotNull ThrowingFunction<ResultSet, V, ? extends Exception> valueProcessor
+    ) throws SQLException {
+        return processResultSetToMap(resultSet, SqlFunction.throwing(keyProcessor), SqlFunction.throwing(valueProcessor));
     }
 
 }

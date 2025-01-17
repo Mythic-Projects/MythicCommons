@@ -44,7 +44,8 @@ public class Query<T> implements SqlExecutable<T> {
 
     @Override
     public @UnknownNullability T execute(@NotNull Connection connection, @NotNull String tableName) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(DatabaseHelper.replaceTable(this.query, tableName))) {
+        String queryFormatted = DatabaseHelper.replaceTable(this.query, tableName);
+        try (PreparedStatement statement = connection.prepareStatement(queryFormatted)) {
             DatabaseHelper.completeStatement(statement, this.parameters);
             if (this.resultProcessor == null) {
                 statement.executeUpdate();

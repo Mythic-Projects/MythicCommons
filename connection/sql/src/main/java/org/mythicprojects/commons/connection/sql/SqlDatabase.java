@@ -87,7 +87,8 @@ public class SqlDatabase implements Connection {
     public <T> @UnknownNullability T connect(@NotNull SqlFunction<java.sql.Connection, T> function) {
         try (java.sql.Connection connection = this.dataSource.getConnection()) {
             return function.apply(connection);
-        } catch (SQLException ex) {
+        }
+        catch (SQLException ex) {
             this.exceptionHandler.accept(ex);
             return null;
         }
@@ -103,7 +104,8 @@ public class SqlDatabase implements Connection {
         return this.connect(connection -> {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 return function.apply(statement);
-            } catch (SQLException ex) {
+            }
+            catch (SQLException ex) {
                 this.exceptionHandler.accept(ex);
                 return null;
             }
@@ -111,17 +113,23 @@ public class SqlDatabase implements Connection {
     }
 
     @NonBlocking
-    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query) {
+    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(
+            @NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query
+    ) {
         return this.runAsync(() -> this.executeStatement(function, query));
     }
 
     @Blocking
-    public <T> @UnknownNullability T executeStatement(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName) {
+    public <T> @UnknownNullability T executeStatement(
+            @NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName
+    ) {
         return this.executeStatement(function, DatabaseHelper.replaceTable(query, tableName));
     }
 
     @NonBlocking
-    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(@NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName) {
+    public <T> CompletableFuture<@UnknownNullability T> executeStatementAsync(
+            @NotNull SqlFunction<PreparedStatement, T> function, @NotNull String query, @NotNull String tableName
+    ) {
         return this.executeStatementAsync(function, DatabaseHelper.replaceTable(query, tableName));
     }
 
@@ -130,7 +138,7 @@ public class SqlDatabase implements Connection {
     }
 
     @Blocking
-    public SqlTable createTable(@NotNull String tableName, @NotNull String createQuery) {
+    public @NotNull SqlTable createTable(@NotNull String tableName, @NotNull String createQuery) {
         if (this.tables.get(tableName) != null) {
             throw new IllegalStateException("Table " + tableName + " already exists");
         }
@@ -142,7 +150,7 @@ public class SqlDatabase implements Connection {
     }
 
     @Blocking
-    public SqlTable findOrCreateTable(@NotNull String tableName, @NotNull String createQuery) {
+    public @NotNull SqlTable findOrCreateTable(@NotNull String tableName, @NotNull String createQuery) {
         return this.findTable(tableName).orElseGet(() -> this.createTable(tableName, createQuery));
     }
 
@@ -151,6 +159,7 @@ public class SqlDatabase implements Connection {
         return CompletableFuture.supplyAsync(consumer, this.executor);
     }
 
+    @Contract("_ -> new")
     public static Builder builder(@NotNull SqlConfiguration configuration) {
         return new Builder(configuration);
     }

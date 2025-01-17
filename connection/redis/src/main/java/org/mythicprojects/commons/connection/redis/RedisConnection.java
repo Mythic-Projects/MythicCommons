@@ -5,6 +5,7 @@ import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.connection.Connection;
@@ -18,6 +19,8 @@ public class RedisConnection implements Connection {
     private RedisClient client;
 
     private RedisRepository repository;
+
+    private final AtomicBoolean wasOpen = new AtomicBoolean(false);
 
     public RedisConnection(@NotNull RedisConfiguration configuration, @NotNull Consumer<Runnable> runAsync) {
         this.configuration = configuration;
@@ -61,17 +64,38 @@ public class RedisConnection implements Connection {
     }
 
     @Override
-    public void open() {
+    public boolean isOpen() {
+        return this.client != null;
+    }
+
+    @Override
+    public synchronized void open() {
+        if (this.isOpen()) {
+            throw new IllegalStateException("Connection is already open.");
+        }
+        else if (this.wasOpen.get()) {
+            throw new IllegalStateException("Connection is closed. Create a new connection to open it.");
+        }
+
         this.uri = RedisURI.create(this.configuration.getUri());
         this.client = RedisClient.create(this.uri);
 
         this.repository = new RedisRepository(this);
+
+        this.wasOpen.set(true);
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
+        if (this.isClosed()) {
+            throw new IllegalStateException("Connection is already closed.");
+        }
+
         this.repository.closeConnections();
         this.client.shutdown();
+
+        this.repository = null;
+        this.client = null;
     }
 
     @Override

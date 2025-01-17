@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.ApiStatus;
@@ -33,6 +34,8 @@ public class SqlDatabase implements Connection {
 
     private final Map<String, SqlTable> tables = new ConcurrentHashMap<>();
 
+    private final AtomicBoolean wasOpen = new AtomicBoolean(false);
+
     protected SqlDatabase(
             @NotNull SqlConfiguration configuration,
             @NotNull Consumer<HikariDataSource> dataSourceConsumer,
@@ -52,8 +55,11 @@ public class SqlDatabase implements Connection {
 
     @Override
     public synchronized void open() {
-        if (this.dataSource != null) {
-            throw new IllegalStateException("Database is already open");
+        if (this.isOpen()) {
+            throw new IllegalStateException("Database is already open.");
+        }
+        else if (this.wasOpen.get()) {
+            throw new IllegalStateException("Database is closed. Create a new database to open it.");
         }
 
         this.dataSource = new HikariDataSource();
@@ -71,12 +77,14 @@ public class SqlDatabase implements Connection {
         this.dataSource.addDataSourceProperty("useServerPrepStmts", true);
 
         this.dataSourceConsumer.accept(this.dataSource);
+
+        this.wasOpen.set(true);
     }
 
     @Override
     public synchronized void close() {
-        if (this.dataSource == null) {
-            throw new IllegalStateException("Database is already closed");
+        if (this.isClosed()) {
+            throw new IllegalStateException("Database is already closed.");
         }
 
         this.tables.clear();

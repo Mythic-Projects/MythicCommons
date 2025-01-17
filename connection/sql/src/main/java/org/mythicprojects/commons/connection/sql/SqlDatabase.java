@@ -46,6 +46,11 @@ public class SqlDatabase implements Connection {
     }
 
     @Override
+    public boolean isOpen() {
+        return this.dataSource != null;
+    }
+
+    @Override
     public synchronized void open() {
         if (this.dataSource != null) {
             throw new IllegalStateException("Database is already open");
@@ -74,6 +79,7 @@ public class SqlDatabase implements Connection {
             throw new IllegalStateException("Database is already closed");
         }
 
+        this.tables.clear();
         this.dataSource.close();
         this.dataSource = null;
     }
@@ -168,8 +174,7 @@ public class SqlDatabase implements Connection {
 
         private final SqlConfiguration configuration;
 
-        private Consumer<HikariDataSource> dataSourceConsumer = dataSource -> {
-        };
+        private Consumer<HikariDataSource> dataSourceConsumer = dataSource -> {};
         private Consumer<Throwable> exceptionHandler = Throwable::printStackTrace;
         private Executor executor = ForkJoinPool.commonPool();
 

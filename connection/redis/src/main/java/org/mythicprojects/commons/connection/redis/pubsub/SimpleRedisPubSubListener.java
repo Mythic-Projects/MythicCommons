@@ -16,6 +16,11 @@ public abstract class SimpleRedisPubSubListener extends AbstractRedisPubSubListe
     }
 
     @Override
+    public boolean isOpen() {
+        return this.connection != null && this.connection.isOpen();
+    }
+
+    @Override
     public void open() {
         this.connection = this.client.connectPubSub();
         this.connection.addListener(this);
@@ -27,6 +32,7 @@ public abstract class SimpleRedisPubSubListener extends AbstractRedisPubSubListe
         if (this.connection == null || !this.connection.isOpen()) {
             return;
         }
+        this.connection.sync().unsubscribe(this.channel);
         this.connection.close();
     }
 

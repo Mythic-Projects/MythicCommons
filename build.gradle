@@ -7,7 +7,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group = 'org.mythicprojects.commons'
-    version = '0.20.1-SNAPSHOT'
+    version = '0.20.2-SNAPSHOT'
 
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16

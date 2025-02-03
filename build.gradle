@@ -7,10 +7,12 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group = 'org.mythicprojects.commons'
-    version = '0.20.2-SNAPSHOT'
+    version = '0.21.0-SNAPSHOT'
 
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 
     compileJava.options.encoding = 'UTF-8'
 }
@@ -20,11 +22,11 @@ subprojects {
         mavenCentral()
 
         // Mythic Projects
-        maven { url "https://repo.mythicprojects.org/releases" }
-        maven { url "https://repo.mythicprojects.org/snapshots" }
+        maven { url = "https://repo.mythicprojects.org/releases" }
+        maven { url = "https://repo.mythicprojects.org/snapshots" }
 
         // Paper
-        maven { url "https://repo.papermc.io/repository/maven-public" }
+        maven { url = "https://repo.papermc.io/repository/maven-public" }
     }
 
     java {
@@ -90,8 +92,8 @@ subprojects {
 
         repositories {
             maven {
-                name "mythicprojects-repo"
-                url "https://repo.mythicprojects.org/${version.toString().endsWith('SNAPSHOT') ? 'snapshots' : 'releases'}"
+                name = "mythicprojects-repo"
+                url = "https://repo.mythicprojects.org/${version.toString().endsWith('SNAPSHOT') ? 'snapshots' : 'releases'}"
 
                 credentials {
                     username = System.getenv("MAVEN_NAME")
@@ -104,6 +106,6 @@ subprojects {
 
 idea {
     project {
-        jdkName = "17"
+        jdkName = "21"
     }
 }

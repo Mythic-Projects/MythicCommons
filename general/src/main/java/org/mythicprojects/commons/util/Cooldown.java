@@ -5,10 +5,19 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.WeakHashMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class Cooldown<T> {
 
     private final Map<T, Instant> cooldowns = new WeakHashMap<>(32);
+
+    /**
+     * @param key the key to get the cooldown of
+     * @return the instant the key is on cooldown until, or null if the key is not on cooldown
+     */
+    public @Nullable Instant getCooldown(@NotNull T key) {
+        return this.cooldowns.get(key);
+    }
 
     /**
      * @param key the key to check

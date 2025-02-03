@@ -54,6 +54,17 @@ public class SupplierLazy<T> implements Lazy, Supplier<T> {
         return value;
     }
 
+    public @NotNull Optional<T> getWithoutComputing() {
+        if (this.value == null) {
+            return Optional.empty();
+        }
+        return this.value;
+    }
+
+    public boolean isComputed() {
+        return this.value != null;
+    }
+
     protected @Nullable T whenFailed(@NotNull Throwable throwable) {
         this.exception = throwable;
         throw LazyComputationFailedException.failedComputation(throwable);

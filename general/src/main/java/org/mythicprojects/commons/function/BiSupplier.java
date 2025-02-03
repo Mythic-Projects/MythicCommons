@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Pair;
 
 @FunctionalInterface
-public interface BiSupplier<T, U> {
-
-    Pair<T, U> get();
+public interface BiSupplier<T, U> extends Supplier<Pair<T, U>> {
 
     static <T, U> BiSupplier<T, U> empty() {
         return () -> null;

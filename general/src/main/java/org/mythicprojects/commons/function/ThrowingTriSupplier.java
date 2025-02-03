@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Triple;
 
 @FunctionalInterface
-public interface ThrowingTriSupplier<T, U, V, E extends Throwable> {
-
-    Triple<T, U, V> get() throws E;
+public interface ThrowingTriSupplier<T, U, V, E extends Throwable> extends ThrowingSupplier<Triple<T, U, V>, E> {
 
     static <T, U, V, E extends Throwable> ThrowingTriSupplier<T, U, V, E> of(@NotNull TriSupplier<T, U, V> supplier) {
         return supplier::get;

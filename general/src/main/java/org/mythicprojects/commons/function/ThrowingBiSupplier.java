@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mythicprojects.commons.wrapper.Pair;
 
 @FunctionalInterface
-public interface ThrowingBiSupplier<T, U, E extends Exception> {
-
-    Pair<T, U> get() throws E;
+public interface ThrowingBiSupplier<T, U, E extends Exception> extends ThrowingSupplier<Pair<T, U>, E> {
 
     static <T, U, E extends Exception> ThrowingBiSupplier<T, U, E> of(@NotNull BiSupplier<T, U> supplier) {
         return supplier::get;

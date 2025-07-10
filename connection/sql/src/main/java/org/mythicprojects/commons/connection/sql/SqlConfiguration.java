@@ -14,4 +14,10 @@ public interface SqlConfiguration {
 
     int getConnectionTimeout();
 
+    int getIdleTimeout();
+
+    int getMaxLifetime();
+
+    int getKeepaliveTime();
+
 }

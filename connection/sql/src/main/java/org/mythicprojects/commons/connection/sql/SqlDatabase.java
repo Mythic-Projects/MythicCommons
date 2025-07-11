@@ -71,9 +71,9 @@ public class SqlDatabase implements Connection {
         this.dataSource.setMaximumPoolSize(this.configuration.getPoolSize());
         this.dataSource.setConnectionTimeout(this.configuration.getConnectionTimeout());
 
-        this.dataSource.setIdleTimeout(this.configuration.getIdleTimeout());    // 4 min
-        this.dataSource.setMaxLifetime(this.configuration.getMaxLifetime());    // 4.5 min
-        this.dataSource.setKeepaliveTime(this.configuration.getKeepaliveTime());  // 2 min
+        this.configuration.getIdleTimeout().ifPresent(value -> this.dataSource.setIdleTimeout(value));
+        this.configuration.getMaxLifetime().ifPresent(value -> this.dataSource.setMaxLifetime(value));
+        this.configuration.getKeepaliveTime().ifPresent(value -> this.dataSource.setKeepaliveTime(value));
 
         this.dataSource.addDataSourceProperty("cachePrepStmts", true);
         this.dataSource.addDataSourceProperty("prepStmtCacheSize", 250);

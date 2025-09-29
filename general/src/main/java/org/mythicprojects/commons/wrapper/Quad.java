@@ -14,6 +14,18 @@ public class Quad<A, B, C, D> {
         this.fourth = fourth;
     }
 
+    public A getFirst() {
+        return this.first;
+    }
+
+    public B getSecond() {
+        return this.second;
+    }
+
+    public C getThird() {
+        return this.third;
+    }
+
     public D getFourth() {
         return this.fourth;
     }

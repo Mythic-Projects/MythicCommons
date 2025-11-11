@@ -15,6 +15,10 @@ public interface SqlConfiguration {
 
     int getConnectionTimeout();
 
+    default String getDriverClassName() {
+        return "com.mysql.cj.jdbc.Driver";
+    }
+
     default Optional<Integer> getIdleTimeout() {
         return Optional.empty();
     }
